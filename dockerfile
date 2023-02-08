@@ -10,6 +10,6 @@ RUN mkdir /app
 COPY --from=build-stage /app/build /app
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# 80포트 오픈하고 nginx 실행
+# 3000포트 오픈하고 nginx 실행
 EXPOSE 3000
 CMD ["nginx", "-g", "daemon off;"]
