@@ -25,7 +25,7 @@
     width: 530px;
   }
 
-
+ 
   .form_box{
     margin-top: 10px;
     margin-bottom: 10px;
@@ -43,6 +43,9 @@
 
   }
 
+  .form_sign{
+    cursor: pointer;
+  }
 
   .form_btn {
     width: 530px;

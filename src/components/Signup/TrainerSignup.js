@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import auth, { duplicateCheck } from '../../store/auth';
 import {signup} from '../../store/auth';
 import styles from "./Signup.module.css"
-const Signup = () => {
+import { useNavigate } from 'react-router-dom';
+const TrainerSignup = () => {
     const [name, setName] = useState({ name: "", nameMsg: "", isName: false });
     const [gender, setGender] = useState({ gender: "male", isGender: false });
     const [email, setEmail] = useState({ email: "", emailMsg: "", isEmail: undefined });
@@ -24,6 +25,8 @@ const Signup = () => {
     const genderInputRef = useRef();
     const birthInputRef = useRef();
     const phoneInputRef = useRef();
+
+    const navigate = useNavigate();
 
     const nameChangeHandler = (e) => {
         const curName = e.target.value;
@@ -133,7 +136,8 @@ const Signup = () => {
             career : careers
         })
 
-        dispatch(signup("trainer", data))
+        dispatch(signup("trainer", data));
+        navigate("/login")
       
     }
 
@@ -228,23 +232,12 @@ const Signup = () => {
             </form>
 
             <div className={styles.form_btn_box}>
-                <button className={styles.form_sub_btn} >뒤로가기</button>
+                <button className={styles.form_sub_btn} onClick={()=> navigate(-1)}>뒤로가기</button>
             </div>
         </div>
     );
 };
 
-export default Signup;
-        // const formData = new FormData();
-        // formData.append('email', "vksek222@gmail.com");
-        // formData.append('file', file);
-        // console.log(file)
-     
-        // axios.post('/api/user/upload', formData).then(res => {
-        //     console.log(res);
-        // })
-        // const fileChangedHandler = (e) => {
-        //     const file = e.target.files;
-        //     //console.log(file);
-        //     setFile(file[0]);
-        // }
+export default TrainerSignup;
+ 
+ 

@@ -5,13 +5,14 @@ import kakao from "../../assets/img/login_kakao.png";
 import naver from "../../assets/img/login_naver.png";
 import google from "../../assets/img/login_google.png";
 import { useNavigate } from 'react-router-dom';
-import { login }  from '../../store/auth';
+import { authActions, login }  from '../../store/auth';
 
-import BasicLoadingSpinner from '../Loading/BasicLoadingSpinner';
 const Login = () => {
 const dispatch = useDispatch();
 const navigate=useNavigate();
-const { isLoading, isLoggedIn} = useSelector((state) => state.auth);
+const { role, isLoggedIn} = useSelector((state) => state.auth);
+const {roleToken} = useSelector(state=>state.auth)
+console.log(role,'ㅁㄴ어ㅏㅁ나어', roleToken, '롤, 롤토큰')
 const [userInfo, setUserInfo] = useState({
     email: "",
     isEmail: undefined,
@@ -22,12 +23,18 @@ const [userInfo, setUserInfo] = useState({
 })
 
 
+console.log("로그인상태", isLoggedIn);
 
 useEffect(()=>{
-    if(isLoggedIn){
-        navigate("/home");
+    console.log('유즈 이펙트 안에',role,'확인',roleToken)
+    if(roleToken === null){
+        
+    }else{
+        navigate(`/${roleToken}/home`);
+        // navigate(`/client/home`);
     }
-},[isLoggedIn])
+
+},[roleToken]) 
 
 const userInfoHandler= (e)=>{
     switch(e.target.name){
@@ -54,7 +61,6 @@ const onSubmitHandler = (e)=>{
 
 return (
     <div className={styles.Login}> 
-
     <div className={styles.header_box}>
                 <div className={styles.header}>MPTI</div>
             </div>
@@ -70,7 +76,7 @@ return (
             <div className={styles.comment}><p>{userInfo.passwordMsg}</p></div>
             </div>
 
-            <div className={styles.form_sign_box}><div className={styles.form_sign}>회원가입</div></div>
+            <div className={styles.form_sign_box}><div className={styles.form_sign} onClick={()=> navigate("/select")}>회원가입</div></div>
             {(userInfo.isEmail && userInfo.isPassword)?
              <div className={styles.form_btn_box}><button >LOGIN</button></div>:
               <div className={styles.form_btn_box_none}>< button  disabled={true}>로그인</button></div>  }
@@ -78,9 +84,9 @@ return (
             <div className={styles.form_simple}>간편 회원가입</div>
             
             <div className={styles.simple_box}>
-             <div className={styles.simple_btn_kakao} onClick={()=>window.location.href="http://i8a803.p.ssafy.io/api/auth/oauth2/authorize/kakao?redirect_uri=http://localhost:3000/oauth2/redirect"}><img src={kakao}></img>Kakao</div>
-                <div className={styles.simple_btn_google} onClick={()=>window.location.href="http://i8a803.p.ssafy.io/api/auth/oauth2/authorize/google?redirect_uri=http://localhost:3000/oauth2/redirect"}> <img src={google}></img>Google</div>
-                <div className={styles.simple_btn_naver} onClick={()=>window.location.href="http://i8a803.p.ssafy.io/api/auth/oauth2/authorize/naver?redirect_uri=http://localhost:3000/oauth2/redirect"}> <img src={naver}></img>Naver</div>
+             <div className={styles.simple_btn_kakao} onClick={()=>window.location.href="https://i8a803.p.ssafy.io/api/auth/oauth2/authorize/kakao?redirect_uri=https://i8a803.p.ssafy.io/oauth2/redirect"}><img src={kakao}></img>Kakao</div>
+                <div className={styles.simple_btn_google} onClick={()=>window.location.href="https://i8a803.p.ssafy.io/api/auth/oauth2/authorize/google?redirect_uri=https://i8a803.p.ssafy.io/oauth2/redirect"}> <img src={google}></img>Google</div>
+                <div className={styles.simple_btn_naver} onClick={()=>window.location.href="https://i8a803.p.ssafy.io/api/auth/oauth2/authorize/naver?redirect_uri=https://i8a803.p.ssafy.io/oauth2/redirect"}> <img src={naver}></img>Naver</div>
             </div>
 
         </form>

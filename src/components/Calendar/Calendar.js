@@ -1,99 +1,11 @@
 import React, { useState } from "react";
-import { Icon } from "@iconify/react";
 import { format, addMonths, subMonths } from "date-fns";
-import { startOfMonth, endOfMonth, startOfWeek, endOfWeek } from "date-fns";
-import { isSameMonth, isSameDay, addDays } from "date-fns";
 import styles from "./Calendar.module.css";
+import CalendarHeader from "./CalendarHeader";
+import CalendarDays from "./CalendarDays";
+import CalendarCells from "./CalendarCells";
 
-const RenderHeader = ({ currentMonth, prevMonth, nextMonth }) => {
-  return (
-    <div className={`${styles.header} ${styles.headerRow}`}>
-      <Icon
-        icon="material-symbols:arrow-back-ios-new-rounded"
-        onClick={prevMonth}
-      />
-      <div className={styles.headerColStart}>
-        <span className={styles.headerColText}>
-          <span className={styles.headerColTextMonth}>
-            {format(currentMonth, "M")}월
-          </span>
-          {format(currentMonth, "yyyy")}
-        </span>
-      </div>
-      <Icon
-        icon="material-symbols:arrow-forward-ios-rounded"
-        onClick={nextMonth}
-      />
-    </div>
-  );
-};
-
-const RenderDays = () => {
-  const days = [];
-  const date = ["일", "월", "화", "수", "목", "금", "토"];
-
-  for (let i = 0; i < 7; i++) {
-    days.push(
-      <div className={styles.calendarDaysCol} key={i}>
-        {date[i]}
-      </div>
-    );
-  }
-
-  return <div className={styles.calendarDays}>{days}</div>;
-};
-
-const RenderCells = ({ currentMonth, selectedDate, onDateClick }) => {
-  const monthStart = startOfMonth(currentMonth);
-  const monthEnd = endOfMonth(monthStart);
-  const startDate = startOfWeek(monthStart);
-  const endDate = endOfWeek(monthEnd);
-
-  const rows = [];
-  let days = [];
-  let day = startDate;
-  let formattedDate = "";
-
-  while (day <= endDate) {
-    for (let i = 0; i < 7; i++) {
-      formattedDate = format(day, "d");
-      days.push(
-        <div
-          className={`${styles.bodyRowCol} ${
-            !isSameMonth(day, monthStart)
-              ? `${styles.bodyRowColNotValid}`
-              : isSameDay(day, selectedDate)
-              ? `${styles.bodyRowColSellect}`
-              : format(currentMonth, "M") !== format(day, "M")
-              ? `${styles.bodyRowColNotValid}`
-              : `${styles.bodyRowColValid}`
-          }`}
-          key={day}
-        >
-          <span
-            className={
-              format(currentMonth, "M") !== format(day, "M")
-                ? `${styles.bodyRowColNotValid}`
-                : ""
-            }
-          >
-            {formattedDate}
-          </span>
-        </div>
-      );
-      day = addDays(day, 1);
-    }
-    rows.push(
-      <div className={styles.bodyRow} key={day}>
-        {days}
-      </div>
-    );
-    days = [];
-  }
-  return <div className={styles.body}>{rows}</div>;
-};
-
-const Calendar = () => {
+const Calendar = ({ allData, getDaySchedule }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -104,21 +16,36 @@ const Calendar = () => {
     setCurrentMonth(addMonths(currentMonth, 1));
   };
   const onDateClick = (day) => {
-    setSelectedDate(day);
-  };
+    const formatDay = format(day, "yyyy-MM-dd");
+    const intDate = formatDay.split("-").map((item) => parseInt(item));
+    const formatToday = format(new Date(), "yyyy-MM-dd");
+    const intFormatToday = formatToday.split("-").map((item) => parseInt(item));
+    if (intDate[0] > intFormatToday[0]) {
+      setSelectedDate(day);
+      getDaySchedule(intDate);
+    } else if (intDate[0] === intFormatToday[0] && intDate[1] > intFormatToday[1]) {
+        setSelectedDate(day);
+        getDaySchedule(intDate);
+      } else if (intDate[0] === intFormatToday[0] && intDate[1] === intFormatToday[1] && intDate[2] >= intFormatToday[2]) {
+        setSelectedDate(day);
+        getDaySchedule(intDate);
+    }
+  }
+
   return (
     <div className={styles.calendar}>
-      <RenderHeader
+      <CalendarHeader
         currentMonth={currentMonth}
         prevMonth={prevMonth}
         nextMonth={nextMonth}
       />
       <div className={styles.calendarBody}>
-        <RenderDays />
-        <RenderCells
+        <CalendarDays />
+        <CalendarCells
           currentMonth={currentMonth}
           selectedDate={selectedDate}
           onDateClick={onDateClick}
+          allData={allData}
         />
       </div>
     </div>
