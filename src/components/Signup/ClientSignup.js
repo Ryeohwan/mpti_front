@@ -111,6 +111,7 @@ const ClientSignup = () => {
     const curDate = e.target.value;
     const selectedDate = new Date(curDate);
     const todayDate = new Date();
+    console.log(e.target.value)
     if (selectedDate.getTime() > todayDate.getTime()) {
       setBirth({ birth: "", birthMsg: "미래에서 오셧군요", isBirth: false });
     } else {
@@ -121,7 +122,7 @@ const ClientSignup = () => {
   const duplicateHandler = (e) => {
     e.preventDefault();
     if (email.isEmail) {
-      dispatch(duplicateCheck("client", email.email))
+      dispatch(duplicateCheck("user", email.email))
         .then((res) => setEmail({ ...email, isEmail: true, emailMsg: res }))
         .catch((err) => {
           setEmail({ ...email, isEmail: false, emailMsg: err });
@@ -161,14 +162,14 @@ const ClientSignup = () => {
       name: name.name,
       email: email.email,
       password: password.password,
-      birthday: birth.birth,
+      birth: birth.birth,
       gender: gender.gender,
       phone: phoneInputRef.current.value,
     };
 
     dispatch(signup("user", data))
       .then((res) => {
-        alert("회원가입 성공");
+        // alert("회원가입 성공");
         navigate("/login");
       })
       .catch((err) => {
